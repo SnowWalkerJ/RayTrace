@@ -42,7 +42,11 @@ class Vector {
     RT_FLOAT xy1 = this->dot(v1), xy2 = this->dot(v2);
     RT_FLOAT component1 = a2 * xy1 + b2 * xy2,
              component2 = c2 * xy1 + d2 * xy2;
-    assert(std::fabs((component1 * v1 + component2 * v2 - *this).Norm()) < 1e-5);
+    if (std::fabs((component1 * v1 + component2 * v2 - *this).Norm()) >= 1e-5) {
+      std::cout << (component1 * v1 + component2 * v2 - *this).Norm() << std::endl;
+      assert(std::fabs((component1 * v1 + component2 * v2 - *this).Norm()) < 1e-5);
+    }
+
     return {component1, component2};
   }
   mkInplaceAdd(Vector)
@@ -59,6 +63,10 @@ class Vector {
  private:
   detail::vector3d m_data_;
 };
+
+inline std::ostream &operator<<(std::ostream &os, const Vector &v) {
+  return os << "(" << v.X() << ", " << v.Y() << ", " << v.Z() << ')';
+}
 
 typedef Vector Point;
 } // namespace raytrace

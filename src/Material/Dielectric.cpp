@@ -10,6 +10,10 @@ static RT_FLOAT reflectance(RT_FLOAT cosine, RT_FLOAT ref_idx) {
   return r0 + (1 - r0) * std::pow((1 - cosine),5);
 }
 
+Dielectric::Dielectric(RT_FLOAT refraction) {
+  m_refraction_ = refraction;
+}
+
 bool Dielectric::Scatter(const Vector &normal, const Point &point, const Ray &rin, Ray &rout) const {
   Vector vin = rin.Direction();
   RT_FLOAT cos = vin.dot(normal);
@@ -28,13 +32,19 @@ bool Dielectric::Scatter(const Vector &normal, const Point &point, const Ray &ri
   Rng &rng = GetRandomGenerator();
   Vector vout;
   if (ratio * sin <= 1 && reflectance(cos, m_refraction_) < rng.nextFloat()) {
-    vout = vin - normal * (cos * 2 * sign);
-  } else {
     Vector vout_perp = ratio * (vin + sign * cos * normal);
     Vector vout_parallel = -sin * sign * normal;
-    vout = vout_perp + vout_parallel;
+    vout = (vout_perp + vout_parallel).Normalize();
+    assert(abs(vout.Norm() - 1) < 1e-5);
+  } else {
+    vout = vin - normal * (cos * 2);
+    if (abs(vout.Norm() - 1) >= 1e-5) {
+      std::cout << cos << " " << vin << " " << normal << vout << std::endl;
+      std::cout << vout.Norm() << std::endl;
+      assert(abs(vout.Norm() - 1) < 1e-5);
+    }
   }
-  assert(abs(vout.Norm() - 1) < 1e-5);
+
   rout = Ray(point, vout);
   return true;
 }

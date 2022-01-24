@@ -20,22 +20,17 @@ class Ray {
   Vector m_direction_;
 };
 
-class Hittable;
-namespace material {
-class Material;
-}
+class AbstractObject;
 
 struct Intersection {
   Intersection() {
     m_t_ = std::numeric_limits<RT_FLOAT>::max();
     p_object_ = nullptr;
-    p_material_ = nullptr;
   }
   RT_FLOAT m_t_;                       // length of the ray from origin to intersection
   RT_FLOAT m_u_, m_v_;                 // 2D coordinate on surface
   Vector m_normal_;
-  const Hittable *p_object_;
-  const material::Material *p_material_;
+  const AbstractObject *p_object_;
 };
 }
 #endif //RAYTRACE_INCLUDE_RAY_H_

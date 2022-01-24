@@ -4,6 +4,7 @@
 #include <memory>
 #include "Hittable.h"
 #include "Color.h"
+#include "Object.h"
 
 namespace raytrace {
 class Shape;
@@ -20,15 +21,11 @@ class Scene : public Hittable {
     return *this;
   }
   Color GetBackground() const { return m_background_; }
-  template<typename ShapeT, typename...Args>
-  Hittable *AddShape(Args &&...args) {
-    m_objects_.push_back(std::make_unique<ShapeT>(std::forward<Args>(args)...));
+  template<typename...Args>
+  Hittable *AddObject(Args &&...args) {
+    using Object = ConcreteObject<Args...>;
+    m_objects_.push_back(std::make_unique<Object>(std::forward<Args>(args)...));
     return m_objects_.back().get();
-  }
-  template <typename MaterialT, typename...Args>
-  material::Material *AddMaterial(Args &&...args) {
-    m_materials_.push_back(std::make_unique<MaterialT>(std::forward<Args>(args)...));
-    return m_materials_.back().get();
   }
   bool Intersect(const Ray &ray, Intersection &intersection) const override {
     bool intersected = false;
@@ -39,8 +36,7 @@ class Scene : public Hittable {
   }
  private:
   Color m_background_ = Color::Black();
-  std::list<std::unique_ptr<Hittable>> m_objects_;
-  std::list<std::unique_ptr<material::Material>> m_materials_;
+  std::list<std::unique_ptr<AbstractObject>> m_objects_;
 };
 
 } // namespace raytrace

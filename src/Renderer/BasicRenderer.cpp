@@ -1,4 +1,8 @@
 #include <Renderer/BasicRenderer.h>
+#include <Object.h>
+#include <Rng.h>
+#include <Texture/Texture.h>
+#include <Material/Material.h>
 #include <impl/thread_pool.h>
 
 namespace raytrace::renderer {
@@ -22,15 +26,6 @@ Canvas BasicRenderer::Render(const RenderSet &set) const {
       }
     }
   });
-//  for (size_t x = 0; x < m_width_; x++) {
-//    for (size_t y = 0; y < m_height_; y++) {
-//      Color color = Color::Black();
-//      for (size_t sample_idx = 0; sample_idx < m_samples_per_pixel_; sample_idx++) {
-//        color += Sample(x, y, set);
-//      }
-//      canvas.Pixel(x, y) = (color / m_samples_per_pixel_).Truncate();
-//    }
-//  }
   return canvas;
 }
 Color BasicRenderer::Sample(size_t x, size_t y, const RenderSet &set) const {
@@ -47,15 +42,18 @@ Color BasicRenderer::Trace(const RenderSet &set, const Ray &ray, size_t remain_s
   Intersection intersection;
   bool intersected = set.GetScene().Intersect(ray, intersection);
   if (intersected) {
-    const material::Material *material = intersection.p_material_;
-    Color ret = material->Emmit();
+    RT_FLOAT u = intersection.m_u_,
+             v = intersection.m_v_;
+    const material::Material &material = intersection.p_object_->GetMaterial();
+    const texture::Texture &texture = intersection.p_object_->GetTexture();
+    Color ret = material.Emmit();
     if (remain_scatter_times > 0) {
       Ray rout;
-      bool scattered = material->Scatter(intersection.m_normal_, ray.Calculate(intersection.m_t_), ray, rout);
+      bool scattered = material.Scatter(intersection.m_normal_, ray.Calculate(intersection.m_t_), ray, rout);
       if (scattered) {
         Color light_color = Trace(set, rout, remain_scatter_times - 1);
-        Color color = material->NoAbsorb();
-        ret = ret + color * light_color;
+        Color color = texture.GetColor(u, v);
+        ret += color * light_color;
       }
     }
     return ret;

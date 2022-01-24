@@ -5,12 +5,11 @@
 namespace raytrace::material {
 class Light : public Material {
  public:
-  Light(const Color &color) : m_color_(color) {}
-  Color NoAbsorb() const override { return Color::Black(); }
-  Color Emmit() const override { return m_color_; }
+  explicit Light(const Color &color) : m_color_(color) {}
   bool Scatter(const Vector &normal, const Point &point, const Ray &rin, Ray &rout) const override {
     return false;
   }
+  Color Emmit() const override { return m_color_; }
  private:
   Color m_color_;
 };

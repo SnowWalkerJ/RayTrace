@@ -10,12 +10,7 @@ class Intersection;
 
 class Shape : public Hittable {
  public:
-  Shape(material::Material *material) {
-    p_material_ = material;
-  }
-  const material::Material *GetMaterial() const { return p_material_; }
- private:
-  material::Material *p_material_;
+  Shape() = default;
 };
 }
 #endif //RAYTRACE_INCLUDE_SHAPE_H_

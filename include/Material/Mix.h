@@ -18,9 +18,6 @@ class MixMaterial : public Material {
   void SetMaterial2(Args&&...args) {
     m_material2_ = std::make_unique<M1>(std::forward<Args>(args)...);
   }
-  bool IsLight() const override { return m_material1_->IsLight() || m_material2_->IsLight(); }
-  Color Emmit() const override { return m_material1_->Emmit() * m_ratio_ + m_material2_->Emmit() * (1 - m_ratio_); }
-  Color NoAbsorb() const override { return m_material1_->NoAbsorb() * m_ratio_ + m_material2_->NoAbsorb() * (1 - m_ratio_); }
   bool Scatter(const Vector &normal, const Point &point, const Ray &rin, Ray &rout) const override {
     Rng &rng = GetRandomGenerator();
     if (rng.nextFloat() < m_ratio_) {

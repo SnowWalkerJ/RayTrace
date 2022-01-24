@@ -5,7 +5,7 @@
 namespace raytrace::shape {
 class Sphere : public Shape {
  public:
-  Sphere(Point position, RT_FLOAT radius, material::Material *material) : Shape(material), m_position_(position), m_radius_(radius) {}
+  Sphere(Point position, RT_FLOAT radius) : Shape(), m_position_(position), m_radius_(radius) {}
   bool Intersect(const Ray &ray, Intersection &intersection) const override;
  protected:
   bool SetIntersection(const Ray &ray, RT_FLOAT t, Intersection &intersection) const;

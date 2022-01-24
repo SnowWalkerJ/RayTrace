@@ -24,10 +24,15 @@ bool Sphere::Intersect(const Ray &ray, Intersection &intersection) const {
 }
 bool Sphere::SetIntersection(const Ray &ray, RT_FLOAT t, Intersection &intersection) const {
   if (t > 0 && t < intersection.m_t_) {
-    intersection.p_material_ = Shape::GetMaterial();
     intersection.m_normal_ = (ray.Calculate(t) - m_position_).Normalize();
     intersection.m_t_ = t;
-    intersection.p_object_ = this;
+    const Vector &n = intersection.m_normal_;
+    RT_FLOAT phi = std::atan2(-n.Z(), n.X()) + M_PI,
+             theta = std::acos(-n.Y());
+    RT_FLOAT u = phi / 2 / M_PI,
+             v = theta / M_PI;
+    intersection.m_u_ = u;
+    intersection.m_v_ = v;
     return true;
   } else {
     return false;

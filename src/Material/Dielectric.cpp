@@ -7,7 +7,7 @@ static RT_FLOAT reflectance(RT_FLOAT cosine, RT_FLOAT ref_idx) {
   // Use Schlick's approximation for reflectance.
   auto r0 = (1 - ref_idx) / (1 + ref_idx);
   r0 = r0 * r0;
-  return r0 + (1 - r0) * std::pow((1 - cosine),5);
+  return r0 + (1 - r0) * std::pow((1 - std::fabs(cosine)),5);
 }
 
 Dielectric::Dielectric(RT_FLOAT refraction) {
@@ -33,18 +33,12 @@ bool Dielectric::Scatter(const Vector &normal, const Point &point, const Ray &ri
   Vector vout;
   if (ratio * sin <= 1 && reflectance(cos, m_refraction_) < rng.nextFloat()) {
     Vector vout_perp = ratio * (vin + sign * cos * normal);
-    Vector vout_parallel = -sin * sign * normal;
+    Vector vout_parallel = -cos * sign * normal;
     vout = (vout_perp + vout_parallel).Normalize();
-    assert(abs(vout.Norm() - 1) < 1e-5);
   } else {
     vout = vin - normal * (cos * 2);
-    if (abs(vout.Norm() - 1) >= 1e-5) {
-      std::cout << cos << " " << vin << " " << normal << vout << std::endl;
-      std::cout << vout.Norm() << std::endl;
-      assert(abs(vout.Norm() - 1) < 1e-5);
-    }
   }
-
+  assert(abs(vout.Norm() - 1) < 1e-5);
   rout = Ray(point, vout);
   return true;
 }

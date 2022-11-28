@@ -27,9 +27,9 @@ class PPM : public FileFormat {
   void OutputBody(std::ostream &os) const {
     const Canvas &canvas = GetCanvas();
     const size_t width = canvas.Width(), height = canvas.Height();
-    for (size_t y = 0; y < width; y++) {
+    for (size_t y = 0; y < height; y++) {
       for (size_t x = 0; x < width; x++) {
-        Color color = canvas.Pixel(width - x - 1, height - y - 1).Truncate();
+        Color color = canvas.PixelSafe(width - x - 1, height - y - 1).Truncate();
         unsigned char r = static_cast<unsigned char>(color.R() * 255),
                       g = static_cast<unsigned char>(color.G() * 255),
                       b = static_cast<unsigned char>(color.B() * 255);

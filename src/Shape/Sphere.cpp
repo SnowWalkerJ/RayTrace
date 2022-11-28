@@ -1,4 +1,6 @@
 #include <Shape/Sphere.h>
+#include <BVH.h>
+#include <Object.h>
 namespace raytrace::shape {
 bool Sphere::Intersect(const Ray &ray, Intersection &intersection) const {
   // (p0 + t * d - c0) * (p0 + t * d - c0) = R^2
@@ -37,5 +39,13 @@ bool Sphere::SetIntersection(const Ray &ray, RT_FLOAT t, Intersection &intersect
   } else {
     return false;
   }
+}
+std::shared_ptr<BVHLeaf> Sphere::BVH(const AbstractObject *obj) const {
+  return std::make_shared<BVHLeaf>(m_position_.X() - m_radius_,
+                 m_position_.X() + m_radius_,
+                 m_position_.Y() - m_radius_,
+                 m_position_.Y() + m_radius_,
+                 m_position_.Z() - m_radius_,
+                 m_position_.Z() + m_radius_, obj);
 }
 }

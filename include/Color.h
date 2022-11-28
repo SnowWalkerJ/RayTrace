@@ -19,6 +19,7 @@ class Color {
         std::clamp(m_data_.m_z, min, max)
         );
   }
+  RT_FLOAT Luminance() const { return 0.2126*R() + 0.7152*G() + 0.0722*B();}
   static constexpr Color Black() { return {0, 0, 0}; }
   static constexpr Color Red() { return {1, 0, 0}; }
   static constexpr Color Green() { return {0, 1, 0}; }

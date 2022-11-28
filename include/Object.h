@@ -4,13 +4,18 @@
 #include "Texture/Texture.h"
 #include "Shape/Shape.h"
 #include "Hittable.h"
+#include "BVH.h"
 namespace raytrace {
 class AbstractObject : public Hittable {
  public:
   virtual const material::Material &GetMaterial() const = 0;
   virtual const texture::Texture &GetTexture() const = 0;
   virtual const Shape &GetShape() const = 0;
+  [[nodiscard]] std::shared_ptr<BVHLeaf> BVH() const {
+    return GetShape().BVH(this);
+  }
 };
+
 template <typename S, typename M, typename T>
 class ConcreteObject : public AbstractObject {
  public:

@@ -16,7 +16,8 @@ class BVHNode : public Hittable {
     boundary_[2][1] = zhi;
   }
  protected:
-  RT_FLOAT BoxIntersect(const Ray &ray) const;
+  bool BoxIntersect(const Ray &ray, RT_FLOAT t) const;
+  bool FastBoxIntersect(const Ray &ray, RT_FLOAT t) const;
  private:
   std::array<std::array<RT_FLOAT, 2>, 3> boundary_;
   friend std::shared_ptr<BVHNode> BuildBVHTree(const std::list<std::unique_ptr<AbstractObject> > &objects);

@@ -13,9 +13,30 @@ RT_FLOAT get_dimension(const Vector &v, int d) {
     default: return v.Z();
   }
 }
-RT_FLOAT BVHNode::BoxIntersect(const raytrace::Ray &ray) const {
+
+/**
+ * if this returns true, means there `could` be intersection;
+ * otherwise there is no intersection
+ */
+bool BVHNode::FastBoxIntersect(const Ray &ray, RT_FLOAT t) const {
+  Point begin = ray.Origin();
+  Point end = ray.Calculate(t);
+  RT_FLOAT x_min = std::min(begin.X(), end.X()),
+           x_max = std::max(begin.X(), end.X()),
+           y_min = std::min(begin.Y(), end.Y()),
+           y_max = std::max(begin.Y(), end.Y()),
+           z_min = std::min(begin.Z(), end.Z()),
+           z_max = std::max(begin.Z(), end.Z());
+  return !(x_max < boundary_[0][0] || x_min > boundary_[0][1] ||
+           y_max < boundary_[1][0] || y_min > boundary_[1][1] ||
+           z_max < boundary_[2][0] || z_min > boundary_[2][1]);
+}
+
+bool BVHNode::BoxIntersect(const raytrace::Ray &ray, RT_FLOAT t) const {
+  if (!FastBoxIntersect(ray, t)) {
+    return false;
+  }
   const std::array<Vector, 3> directions{Vector{1, 0, 0}, Vector{0, 1, 0}, Vector{0, 0, 1}};
-  RT_FLOAT ret = std::numeric_limits<RT_FLOAT>::infinity();
   for (int di = 0; di < 3; di++) {
     Vector d = directions[di];
     int face_id = d.dot(ray.Direction()) < 0;
@@ -25,11 +46,12 @@ RT_FLOAT BVHNode::BoxIntersect(const raytrace::Ray &ray) const {
     auto intersection = ray.Calculate(solution);
     auto coord1 = get_dimension(intersection, (di + 1) % 3), coord2 = get_dimension(intersection, (di + 2) % 3);
     if (boundary_[(di + 1) % 3][0] <= coord1 && coord1 <= boundary_[(di + 1) % 3][1] &&
-        boundary_[(di + 2) % 3][0] <= coord2 && coord2 <= boundary_[(di + 2) % 3][1]) {
-      ret = std::min(ret, solution);
+        boundary_[(di + 2) % 3][0] <= coord2 && coord2 <= boundary_[(di + 2) % 3][1] &&
+        solution < t) {
+      return true;
     }
   }
-  return ret;
+  return false;
 }
 
 BVHLeaf::BVHLeaf(RT_FLOAT xlo, RT_FLOAT xhi, RT_FLOAT ylo, RT_FLOAT yhi, RT_FLOAT zlo, RT_FLOAT zhi, const Hittable *object) :
@@ -38,7 +60,7 @@ BVHLeaf::BVHLeaf(RT_FLOAT xlo, RT_FLOAT xhi, RT_FLOAT ylo, RT_FLOAT yhi, RT_FLOA
 }
 
 bool BVHLeaf::Intersect(const raytrace::Ray &ray, raytrace::Intersection &intersection) const {
-  return BoxIntersect(ray) <= intersection.m_t_ && object_->Intersect(ray, intersection);
+  return BoxIntersect(ray, intersection.m_t_) && object_->Intersect(ray, intersection);
 }
 
 BVHRoot::BVHRoot(std::shared_ptr<BVHNode> left, std::shared_ptr<BVHNode> right)
@@ -53,7 +75,7 @@ BVHRoot::BVHRoot(std::shared_ptr<BVHNode> left, std::shared_ptr<BVHNode> right)
 }
 
 bool BVHRoot::Intersect(const raytrace::Ray &ray, raytrace::Intersection &intersection) const {
-  if (BoxIntersect(ray) > intersection.m_t_) {
+  if (!BoxIntersect(ray, intersection.m_t_)) {
     return false;
   }
   bool ret = false;

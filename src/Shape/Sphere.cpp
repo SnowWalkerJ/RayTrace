@@ -1,6 +1,9 @@
 #include <Shape/Sphere.h>
 #include <BVH.h>
 #include <Object.h>
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 namespace raytrace::shape {
 bool Sphere::Intersect(const Ray &ray, Intersection &intersection) const {
   // (p0 + t * d - c0) * (p0 + t * d - c0) = R^2

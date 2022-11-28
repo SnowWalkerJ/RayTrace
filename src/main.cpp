@@ -23,25 +23,6 @@ auto Dirty(float dirty_ratio, Args&&...args) {
   return material::MixMaterial(1 - dirty_ratio, T(std::forward<Args>(args)...), material::LambertDiffuse());
 }
 
-Canvas Rescale(const Canvas &canvas) {
-  RT_FLOAT min = std::numeric_limits<RT_FLOAT>::max();
-  RT_FLOAT max = std::numeric_limits<RT_FLOAT>::min();
-  for (int i = canvas.Width() - 1; i >= 0; i--) {
-    for (int j = canvas.Height() - 1; j >= 0; j--) {
-      auto brightness = canvas.PixelSafe(i, j).Luminance();
-      min = std::min(min, brightness);
-      max = std::max(max, brightness);
-    }
-  }
-  Canvas res(canvas.Width(), canvas.Height());
-  for (int i = canvas.Width() - 1; i >= 0; i--) {
-    for (int j = canvas.Height() - 1; j >= 0; j--) {
-      res.Pixel(i, j) = (canvas.PixelSafe(i, j) - Color::White() * min) * (1 / (max - min));
-    }
-  }
-  return res;
-}
-
 int main() {
   using clock = std::chrono::high_resolution_clock;
   auto a = clock::now();
@@ -109,8 +90,8 @@ int main() {
   Canvas canvas = renderer.Render(rset);
   auto d = clock::now();
   std::cout << "Rendering the scene took " << std::chrono::duration_cast<std::chrono::seconds>(d - c).count() << "s" << std::endl;
-  canvas = Rescale(canvas);
   file_format::PPM ppm(canvas);
   ppm.Output("test.ppm");
+    std::cout << "Output done" << std::endl;
   return 0;
 }

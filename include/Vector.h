@@ -2,6 +2,7 @@
 #define RAYTRACE_INCLUDE_VECTOR_H_
 #include "impl/vector.h"
 #include <algorithm>
+#include <cassert>
 namespace raytrace {
 class Vector {
  public:
@@ -42,9 +43,9 @@ class Vector {
     RT_FLOAT xy1 = this->dot(v1), xy2 = this->dot(v2);
     RT_FLOAT component1 = a2 * xy1 + b2 * xy2,
              component2 = c2 * xy1 + d2 * xy2;
-    if (std::fabs((component1 * v1 + component2 * v2 - *this).Norm()) >= 1e-5) {
+    if (std::fabs((component1 * v1 + component2 * v2 - *this).Norm()) >= 1e-4) {
       std::cout << (component1 * v1 + component2 * v2 - *this).Norm() << std::endl;
-      assert(std::fabs((component1 * v1 + component2 * v2 - *this).Norm()) < 1e-5);
+      assert(std::fabs((component1 * v1 + component2 * v2 - *this).Norm()) < 1e-4);
     }
 
     return {component1, component2};

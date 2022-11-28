@@ -15,7 +15,7 @@ BasicRenderer::BasicRenderer(size_t width, size_t height, size_t samples_per_pix
 Canvas BasicRenderer::Render(const RenderSet &set) const {
   Canvas canvas(m_width_, m_height_);
   thread_pool pool;
-  pool.parallelize_loop(0ul, m_width_, [&](size_t start, size_t end) {
+  pool.parallelize_loop(0, m_width_, [&](size_t start, size_t end) {
     for (size_t x = start; x < end; x++) {
       for (size_t y = 0; y < m_height_; y++) {
         Color color = Color::Black();

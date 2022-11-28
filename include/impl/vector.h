@@ -6,10 +6,7 @@
 namespace raytrace::detail {
 struct vector3d {
   RT_FLOAT m_x, m_y, m_z;
-  constexpr vector3d(RT_FLOAT x, RT_FLOAT y, RT_FLOAT z) {
-    m_x = x;
-    m_y = y;
-    m_z = z;
+  constexpr vector3d(RT_FLOAT x, RT_FLOAT y, RT_FLOAT z) : m_x(x), m_y(y), m_z(z) {
   }
   explicit constexpr vector3d(RT_FLOAT v) : vector3d(v, v, v) {}
   vector3d(const vector3d &) noexcept = default;

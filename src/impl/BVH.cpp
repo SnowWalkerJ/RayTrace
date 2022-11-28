@@ -32,7 +32,7 @@ RT_FLOAT BVHNode::BoxIntersect(const raytrace::Ray &ray) const {
   return ret;
 }
 
-BVHLeaf::BVHLeaf(double xlo, double xhi, double ylo, double yhi, double zlo, double zhi, const Hittable *object) :
+BVHLeaf::BVHLeaf(RT_FLOAT xlo, RT_FLOAT xhi, RT_FLOAT ylo, RT_FLOAT yhi, RT_FLOAT zlo, RT_FLOAT zhi, const Hittable *object) :
     BVHNode(xlo, xhi, ylo, yhi, zlo, zhi), object_(object) {
 
 }

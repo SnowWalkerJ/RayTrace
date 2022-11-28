@@ -6,8 +6,8 @@ class thread_pool {
   thread_pool(unsigned int count=0) {
 
   }
-  template <typename T, typename F>
-  void parallelize_loop(T start, T end, F func) {
+  template <typename T1, typename T2, typename F>
+  void parallelize_loop(T1 start, T2 end, F func) {
     func(start, end);
   }
 };

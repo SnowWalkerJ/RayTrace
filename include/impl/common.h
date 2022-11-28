@@ -1,7 +1,7 @@
 #ifndef RAYTRACE_INCLUDE_COMMON_H_
 #define RAYTRACE_INCLUDE_COMMON_H_
 #ifndef RT_FLOAT
-#define RT_FLOAT double
+#define RT_FLOAT float
 #endif // RT_FLOAT
 #ifndef kRT_MIN_T
 #define kRT_MIN_T 1e-5

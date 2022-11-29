@@ -5,7 +5,7 @@
 #include <Material/Metal.h>
 #include <Material/Light.h>
 #include <Material/Dielectric.h>
-#include <Material/Mix.h>
+#include <Material/Mixture.h>
 #include <Shape/Sphere.h>
 #include <Shape/Cube.h>
 #include <Texture/Solid.h>
@@ -20,7 +20,7 @@ using namespace raytrace;
 
 template <typename T, typename...Args>
 auto Dirty(float dirty_ratio, Args&&...args) {
-  return material::MixMaterial(1 - dirty_ratio, T(std::forward<Args>(args)...), material::LambertDiffuse());
+  return material::Mixture(1 - dirty_ratio, T(std::forward<Args>(args)...), material::LambertDiffuse());
 }
 
 int main() {

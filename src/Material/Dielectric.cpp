@@ -15,7 +15,7 @@ Dielectric::Dielectric(RT_FLOAT refraction) {
 }
 
 bool Dielectric::Scatter(const Vector &normal, const Point &point, const Ray &rin, Ray &rout) const {
-  Vector vin = rin.Direction();
+  const auto &vin = rin.Direction();
   RT_FLOAT cos = vin.dot(normal);
   RT_FLOAT sin = std::sqrt(1 - cos * cos);
   RT_FLOAT ratio;
@@ -34,11 +34,11 @@ bool Dielectric::Scatter(const Vector &normal, const Point &point, const Ray &ri
   if (ratio * sin <= 1 && reflectance(cos, m_refraction_) < rng.nextFloat()) {
     Vector vout_perp = ratio * (vin + sign * cos * normal);
     Vector vout_parallel = -cos * sign * normal;
-    vout = (vout_perp + vout_parallel).Normalize();
+    vout = (vout_perp + vout_parallel).normalized();
   } else {
     vout = vin - normal * (cos * 2);
   }
-  assert(abs(vout.Norm() - 1) < 1e-5);
+  assert(abs(vout.squaredNorm() - 1) < 1e-5);
   rout = Ray(point, vout);
   return true;
 }

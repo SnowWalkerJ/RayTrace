@@ -82,10 +82,10 @@ int main() {
   scene.BuildBVH();
   auto c = clock::now();
   std::cout << "Building the BVH tree took " << std::chrono::duration_cast<std::chrono::milliseconds>(c - b).count() << "ms" << std::endl;
-  size_t height = 480, width = 640;
+  size_t height = 480 / 2, width = 640 / 2;
   RT_FLOAT aspect = static_cast<RT_FLOAT>(width) / static_cast<RT_FLOAT>(height);
   camera::PerspectiveCamera camera(120, aspect, Point(0, 1.0, 0.2), Point(0, 0.4, 2.5), Vector(0, 1, 0));
-  renderer::BasicRenderer renderer(width, height, 50000, 0.05);
+  renderer::BasicRenderer renderer(width, height, 100, 0.05);
   renderer::RenderSet rset(scene, camera);
   Canvas canvas = renderer.Render(rset);
   auto d = clock::now();

@@ -7,11 +7,7 @@
 #include <Object.h>
 namespace raytrace {
 RT_FLOAT get_dimension(const Vector &v, int d) {
-  switch (d) {
-    case 0: return v.X();
-    case 1: return v.Y();
-    default: return v.Z();
-  }
+  return v(d);
 }
 
 /**
@@ -21,12 +17,12 @@ RT_FLOAT get_dimension(const Vector &v, int d) {
 bool BVHNode::FastBoxIntersect(const Ray &ray, RT_FLOAT t) const {
   Point begin = ray.Origin();
   Point end = ray.Calculate(t);
-  RT_FLOAT x_min = std::min(begin.X(), end.X()),
-           x_max = std::max(begin.X(), end.X()),
-           y_min = std::min(begin.Y(), end.Y()),
-           y_max = std::max(begin.Y(), end.Y()),
-           z_min = std::min(begin.Z(), end.Z()),
-           z_max = std::max(begin.Z(), end.Z());
+  RT_FLOAT x_min = std::min(begin.x(), end.x()),
+           x_max = std::max(begin.x(), end.x()),
+           y_min = std::min(begin.y(), end.y()),
+           y_max = std::max(begin.y(), end.y()),
+           z_min = std::min(begin.z(), end.z()),
+           z_max = std::max(begin.z(), end.z());
   return !(x_max < boundary_[0][0] || x_min > boundary_[0][1] ||
            y_max < boundary_[1][0] || y_min > boundary_[1][1] ||
            z_max < boundary_[2][0] || z_min > boundary_[2][1]);

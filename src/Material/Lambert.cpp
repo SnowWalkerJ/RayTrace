@@ -11,8 +11,8 @@ bool LambertDiffuse::Scatter(const Vector &normal, const Point &point, const Ray
         rng.nextFloat() * 2 - 1,
         rng.nextFloat() * 2 - 1
         );
-  } while (sample_v.Norm() > 1);
-  Vector out_direction = (sample_v.Normalize() + sphere_center - point).Normalize();
+  } while (sample_v.squaredNorm() > 1);
+  Vector out_direction = (sample_v.normalized() + sphere_center - point).normalized();
   rout = Ray(point, out_direction);
   return true;
 }

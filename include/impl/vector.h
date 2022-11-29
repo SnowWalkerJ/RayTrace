@@ -1,8 +1,9 @@
 #ifndef RAYTRACE_INCLUDE_IMPL_VECTOR_H_
 #define RAYTRACE_INCLUDE_IMPL_VECTOR_H_
 #include "common.h"
-#include <cmath>
-#include <cstddef>
+#include <eigen3/Eigen/Core>
+
+
 namespace raytrace::detail {
 struct vector3d {
   RT_FLOAT m_x, m_y, m_z;
@@ -124,4 +125,5 @@ inline vector3d operator*(RT_FLOAT n, const vector3d &v1) {
 #define mkInplaceSub(cls) cls &operator-=(const cls &x) { m_data_ -= x.m_data_; return *this; }
 #define mkInplaceMul(cls) cls &operator*=(RT_FLOAT n) { m_data_ *= n; return *this; };
 #define mkInplaceDiv(cls) cls &operator/=(RT_FLOAT n) { m_data_ *= n; return *this; };
+
 #endif //RAYTRACE_INCLUDE_IMPL_VECTOR_H_

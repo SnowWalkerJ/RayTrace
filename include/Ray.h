@@ -5,13 +5,13 @@
 namespace raytrace {
 class Ray {
  public:
-  constexpr Ray() = default;
-  constexpr Ray(const Point &origin, const Vector &direction) {
+  Ray() = default;
+  Ray(const Point &origin, const Vector &direction) {
     m_origin_ = origin;
     m_direction_ = direction;
   }
   Point Calculate(RT_FLOAT t) const {
-    return m_origin_ + t * m_direction_;
+    return Point(m_origin_ + t * m_direction_);
   }
   const Point &Origin() const { return m_origin_; }
   const Vector &Direction() const { return m_direction_; }

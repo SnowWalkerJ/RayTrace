@@ -10,7 +10,7 @@ bool Sphere::Intersect(const Ray &ray, Intersection &intersection) const {
   // (p0 - c0) ^2 + t ^2 * d ^ 2 - 2 * d * t * (p0-c0) - R2 = 0
   const RT_FLOAT a = 1.0;
   const RT_FLOAT b = 2 * ray.Direction().dot(ray.Origin() - m_position_);
-  const RT_FLOAT c = (ray.Origin() - m_position_).Norm2() - m_radius_ * m_radius_;
+  const RT_FLOAT c = (ray.Origin() - m_position_).norm() - m_radius_ * m_radius_;
   const RT_FLOAT delta = b * b - 4 * a * c;
   if (delta < 0) {
     return false;
@@ -29,11 +29,11 @@ bool Sphere::Intersect(const Ray &ray, Intersection &intersection) const {
 }
 bool Sphere::SetIntersection(const Ray &ray, RT_FLOAT t, Intersection &intersection) const {
   if (t > 0 && t < intersection.m_t_) {
-    intersection.m_normal_ = (ray.Calculate(t) - m_position_).Normalize();
+    intersection.m_normal_ = (ray.Calculate(t) - m_position_).normalized();
     intersection.m_t_ = t;
     const Vector &n = intersection.m_normal_;
-    RT_FLOAT phi = std::atan2(-n.Z(), n.X()) + M_PI,
-             theta = std::acos(-n.Y());
+    RT_FLOAT phi = std::atan2(-n.z(), n.x()) + M_PI,
+             theta = std::acos(-n.y());
     RT_FLOAT u = phi / 2 / M_PI,
              v = theta / M_PI;
     intersection.m_u_ = u;
@@ -44,11 +44,11 @@ bool Sphere::SetIntersection(const Ray &ray, RT_FLOAT t, Intersection &intersect
   }
 }
 std::shared_ptr<BVHLeaf> Sphere::BVH(const AbstractObject *obj) const {
-  return std::make_shared<BVHLeaf>(m_position_.X() - m_radius_,
-                 m_position_.X() + m_radius_,
-                 m_position_.Y() - m_radius_,
-                 m_position_.Y() + m_radius_,
-                 m_position_.Z() - m_radius_,
-                 m_position_.Z() + m_radius_, obj);
+  return std::make_shared<BVHLeaf>(m_position_.x() - m_radius_,
+                                   m_position_.x() + m_radius_,
+                                   m_position_.y() - m_radius_,
+                                   m_position_.y() + m_radius_,
+                                   m_position_.z() - m_radius_,
+                                   m_position_.z() + m_radius_, obj);
 }
 }

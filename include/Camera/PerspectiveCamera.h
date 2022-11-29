@@ -15,12 +15,12 @@ class PerspectiveCamera : public Camera {
     m_aspect_ratio_ = aspect_ratio;
     m_tan_fov_ = std::tan(m_fov_ / 2);
     m_origin_ = origin;
-    m_forward_ = (target - origin).Normalize();
-    m_right_ = m_forward_.cross(target_up).Normalize();
-    m_up_ = m_right_.cross(m_forward_).Normalize();
+    m_forward_ = (target - origin).normalized();
+    m_right_ = cross(m_forward_, target_up).normalized();
+    m_up_ = cross(m_right_, m_forward_).normalized();
   }
   [[nodiscard]] Ray MakeRay(RT_FLOAT x, RT_FLOAT y) const override {
-    Vector direction = (m_forward_ + (x - 0.5) * m_tan_fov_ * m_aspect_ratio_ * m_right_ + (y - 0.5) * m_tan_fov_ * m_up_).Normalize();
+    Vector direction = (m_forward_ + (x - 0.5) * m_tan_fov_ * m_aspect_ratio_ * m_right_ + (y - 0.5) * m_tan_fov_ * m_up_).normalized();
     return {m_origin_, direction};
   }
 

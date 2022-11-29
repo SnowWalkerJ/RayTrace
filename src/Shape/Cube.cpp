@@ -16,7 +16,7 @@ Cube::Cube(const Point &pos, const Vector &d1, const Vector &d2, RT_FLOAT s1, RT
   m_pos_ = pos;
   m_d_[0] = d1;
   m_d_[1] = d2;
-  m_d_[2] = d1.cross(d2).Normalize();
+  m_d_[2] = cross(d1, d2).normalized();
   m_s_[0] = s1;
   m_s_[1] = s2;
   m_s_[2] = s3;
@@ -32,7 +32,7 @@ bool Cube::Intersect(const Ray &ray, Intersection &intersection) const {
     RT_FLOAT solution = (p1 - ray.Origin()).dot(v) / ray.Direction().dot(v);
     const Vector &v1 = m_d_[(d + 1) % 3],
         &v2 = m_d_[(d + 2) % 3];
-    auto [c1, c2] = (ray.Calculate(solution) - p1).Decompose(v1, v2);
+    auto [c1, c2] = decompose(ray.Calculate(solution) - p1, v1, v2);
     const RT_FLOAT s1 = m_s_[(d + 1) % 3],
         s2 = m_s_[(d + 2) % 3];
     if (solution > kRT_MIN_T && solution < intersection.m_t_ && std::fabs(c1) < s1 / 2 && std::fabs(c2) < s2 / 2) {
@@ -62,12 +62,12 @@ std::shared_ptr<BVHLeaf> Cube::BVH(const AbstractObject *obj) const {
       m_pos_ - m_d_[0] * m_s_[0] - m_d_[1] * m_s_[1] + m_d_[2] * m_s_[2],
       m_pos_ - m_d_[0] * m_s_[0] - m_d_[1] * m_s_[1] - m_d_[2] * m_s_[2]};
   return std::make_shared<BVHLeaf>(
-      std::min({vertex[0].X(), vertex[1].X(), vertex[2].X(), vertex[3].X(), vertex[4].X(), vertex[5].X(), vertex[6].X(), vertex[7].X()}),
-      std::max({vertex[0].X(), vertex[1].X(), vertex[2].X(), vertex[3].X(), vertex[4].X(), vertex[5].X(), vertex[6].X(), vertex[7].X()}),
-      std::min({vertex[0].Y(), vertex[1].Y(), vertex[2].Y(), vertex[3].Y(), vertex[4].Y(), vertex[5].Y(), vertex[6].Y(), vertex[7].Y()}),
-      std::max({vertex[0].Y(), vertex[1].Y(), vertex[2].Y(), vertex[3].Y(), vertex[4].Y(), vertex[5].Y(), vertex[6].Y(), vertex[7].Y()}),
-      std::min({vertex[0].Z(), vertex[1].Z(), vertex[2].Z(), vertex[3].Z(), vertex[4].Z(), vertex[5].Z(), vertex[6].Z(), vertex[7].Z()}),
-      std::max({vertex[0].Z(), vertex[1].Z(), vertex[2].Z(), vertex[3].Z(), vertex[4].Z(), vertex[5].Z(), vertex[6].Z(), vertex[7].Z()}),
+      std::min({vertex[0].x(), vertex[1].x(), vertex[2].x(), vertex[3].x(), vertex[4].x(), vertex[5].x(), vertex[6].x(), vertex[7].x()}),
+      std::max({vertex[0].x(), vertex[1].x(), vertex[2].x(), vertex[3].x(), vertex[4].x(), vertex[5].x(), vertex[6].x(), vertex[7].x()}),
+      std::min({vertex[0].y(), vertex[1].y(), vertex[2].y(), vertex[3].y(), vertex[4].y(), vertex[5].y(), vertex[6].y(), vertex[7].y()}),
+      std::max({vertex[0].y(), vertex[1].y(), vertex[2].y(), vertex[3].y(), vertex[4].y(), vertex[5].y(), vertex[6].y(), vertex[7].y()}),
+      std::min({vertex[0].z(), vertex[1].z(), vertex[2].z(), vertex[3].z(), vertex[4].z(), vertex[5].z(), vertex[6].z(), vertex[7].z()}),
+      std::max({vertex[0].z(), vertex[1].z(), vertex[2].z(), vertex[3].z(), vertex[4].z(), vertex[5].z(), vertex[6].z(), vertex[7].z()}),
       obj
       );
 }

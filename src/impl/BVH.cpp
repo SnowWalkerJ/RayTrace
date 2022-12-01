@@ -14,6 +14,10 @@ RT_FLOAT get_dimension(const Vector &v, int d) {
   }
 }
 
+RT_FLOAT BVHNode::Volume() const {
+  return (boundary_[0][1] - boundary_[0][0]) * (boundary_[1][1] - boundary_[1][0]) * (boundary_[1][1] - boundary_[1][0]);
+}
+
 /**
  * if this returns true, means there `could` be intersection;
  * otherwise there is no intersection
@@ -105,7 +109,7 @@ std::shared_ptr<BVHNode> BuildBVHTree(const std::list<std::unique_ptr<AbstractOb
   std::set<int> deleted;
   for (int i = 0; i < n; i++) {
     for (int j = i + 1; j < n; j++) {
-      queue.emplace(leaves[j]->boundary_[0][1] - leaves[i]->boundary_[0][0], i, j);
+      queue.emplace(BVHRoot(leaves[i], leaves[j]).Volume() - leaves[i]->Volume() - leaves[j]->Volume(), i, j);
     }
   }
   while (!queue.empty()) {
@@ -127,7 +131,7 @@ std::shared_ptr<BVHNode> BuildBVHTree(const std::list<std::unique_ptr<AbstractOb
     for (auto &tup : leaves) {
       if (tup.first == n-1)
         continue;
-      queue.emplace(std::max(tup.second->boundary_[0][1], new_obj->boundary_[0][1]) - std::min(tup.second->boundary_[0][0], new_obj->boundary_[0][0]),
+      queue.emplace(BVHRoot(new_obj, tup.second).Volume() - new_obj->Volume() - tup.second->Volume(),
                     tup.first,
                     n-1);
     }

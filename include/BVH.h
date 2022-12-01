@@ -15,6 +15,7 @@ class BVHNode : public Hittable {
     boundary_[2][0] = zlo;
     boundary_[2][1] = zhi;
   }
+  RT_FLOAT Volume() const;
  protected:
   bool BoxIntersect(const Ray &ray, RT_FLOAT t) const;
   bool FastBoxIntersect(const Ray &ray, RT_FLOAT t) const;

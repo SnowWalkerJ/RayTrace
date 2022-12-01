@@ -50,6 +50,12 @@ class Vector {
 
     return {component1, component2};
   }
+  std::pair<RT_FLOAT, RT_FLOAT> DecomposeOrthogonal(const Vector &v1, const Vector &v2) const {
+    RT_FLOAT component1 = this->dot(v1.Normalize()),
+             component2 = this->dot(v2.Normalize());
+
+    return {component1, component2};
+  }
   mkInplaceAdd(Vector)
   mkInplaceSub(Vector)
   mkInplaceMul(Vector)

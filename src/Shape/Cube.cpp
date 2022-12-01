@@ -32,7 +32,7 @@ bool Cube::Intersect(const Ray &ray, Intersection &intersection) const {
     RT_FLOAT solution = (p1 - ray.Origin()).dot(v) / ray.Direction().dot(v);
     const Vector &v1 = m_d_[(d + 1) % 3],
         &v2 = m_d_[(d + 2) % 3];
-    auto [c1, c2] = (ray.Calculate(solution) - p1).Decompose(v1, v2);
+    auto [c1, c2] = (ray.Calculate(solution) - p1).DecomposeOrthogonal(v1, v2);
     const RT_FLOAT s1 = m_s_[(d + 1) % 3],
         s2 = m_s_[(d + 2) % 3];
     if (solution > kRT_MIN_T && solution < intersection.m_t_ && std::fabs(c1) < s1 / 2 && std::fabs(c2) < s2 / 2) {
